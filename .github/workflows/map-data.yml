@@ -1,0 +1,31 @@
+name: Date hartă (OpenStreetMap)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/city.json'
+      - 'tools/build-map-data.mjs'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Descarcă străzile și locurile orașului
+        run: node tools/build-map-data.mjs
+      - name: Salvează în repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/city-map.json
+          git diff --cached --quiet || git commit -m "Date hartă actualizate din OpenStreetMap"
+          git pull --rebase origin main
+          git push
