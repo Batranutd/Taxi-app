@@ -59,7 +59,7 @@ export function estimateFare(meters, date = new Date()) {
     km: Math.round(km * 10) / 10,
     minutes,
     price: Math.round(price * 100) / 100,
-    low: Math.floor(price * 0.95),
+    low: Math.max(T.minFare, Math.floor(price * 0.95)),
     high: Math.ceil(price * 1.1),
   };
 }

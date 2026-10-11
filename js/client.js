@@ -550,7 +550,7 @@ function placeOrder() {
   store.set('client-order', id);
   ui.chatSeen = 0; ui.lastStatus = ui.scheduledFor ? 'programata' : 'cautare';
   bus.act('createOrder', payload);
-  ui.note = ''; ui.options = {}; ui.scheduledFor = null;
+  ui.note = ''; ui.options = {}; ui.scheduledFor = null; ui.screen = 'home';
   if (payload.scheduledFor) toast('Taxi programat. Te anunțăm când pleacă mașina.', 'ok');
 }
 
@@ -561,6 +561,7 @@ async function cancelOrder() {
   bus.act('cancelOrder', { orderId: o.id, by: 'client' });
   store.set('client-order', null);
   ui.screen = 'home'; ui.lastKey = '';
+  render();
   toast('Comanda a fost anulată.', '', 2500);
 }
 

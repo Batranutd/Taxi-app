@@ -1,1 +1,6 @@
-{"type":"module"}
+{
+  "name": "taxi-app",
+  "private": true,
+  "type": "module",
+  "scripts": { "harta": "node tools/build-map-data.mjs" }
+}

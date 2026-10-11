@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFC21A">
+<meta name="description" content="Aplicație de taxi pentru orașe mici și mijlocii: client, șofer și dispecerat, cu hartă live.">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<title>Taxi · Demo aplicație</title>
+<link rel="stylesheet" href="css/base.css">
+<style>
+  body { background: var(--bg); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: calc(20px + var(--safe-t)) 18px 60px; }
+  .top { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 44px; height: 44px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
+  .brand { font-weight: 850; font-size: 1.2em; letter-spacing: -.01em; }
+  .hero { padding: 42px 0 26px; }
+  .hero h1 { font-size: clamp(2em, 5.4vw, 3.4em); line-height: 1.04; letter-spacing: -.035em; margin: 0 0 14px; max-width: 16ch; }
+  .hero h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--accent) 62%); }
+  .hero p { font-size: 1.12em; color: var(--ink-2); max-width: 56ch; margin: 0; }
+  .apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 28px; }
+  .app {
+    display: flex; flex-direction: column; gap: 10px; text-decoration: none; padding: 20px; border-radius: 22px; background: var(--surface);
+    box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .2s;
+  }
+  .app:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgba(0,0,0,.06), 0 18px 40px rgba(20,22,27,.12); }
+  .app .ico { width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; }
+  .app h2 { margin: 6px 0 0; font-size: 1.35em; letter-spacing: -.01em; }
+  .app p { margin: 0; color: var(--ink-2); }
+  .app ul { margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: .92em; }
+  .app li { display: flex; gap: 8px; align-items: flex-start; }
+  .app li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); margin-top: .55em; flex: none; }
+  .app .go { margin-top: auto; padding-top: 10px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+  .wide { margin-top: 14px; display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 22px; background: var(--ink); color: var(--bg); text-decoration: none; }
+  .wide .grow div:first-child { font-weight: 850; font-size: 1.15em; }
+  .wide .grow div:last-child { opacity: .75; font-size: .92em; }
+  h3.sec { font-size: .82em; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 44px 0 12px; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .step { background: var(--surface); border-radius: 18px; padding: 16px; }
+  .step b.n { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); margin-bottom: 8px; }
+  .step p { margin: 4px 0 0; color: var(--ink-2); font-size: .95em; }
+  .colors { display: flex; flex-wrap: wrap; gap: 10px; }
+  .colors .c { display: flex; align-items: center; gap: 10px; background: var(--surface); border-radius: 14px; padding: 10px 14px; font-weight: 700; }
+  .colors .d { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+  .why { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .why .card { padding: 18px; }
+  .why h4 { margin: 0 0 6px; font-size: 1.05em; }
+  .why p { margin: 0; color: var(--ink-2); font-size: .95em; }
+  footer { margin-top: 40px; color: var(--muted); font-size: .85em; }
+  @media (max-width: 860px) { .apps, .steps { grid-template-columns: 1fr; } .why { grid-template-columns: 1fr; } .hide-m { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="logo" id="logoIco"></div><div class="brand" id="brandName">Taxi</div><span class="pill" style="margin-left:auto">Demo interactiv</span></div>
+
+  <section class="hero">
+    <h1>Taxi comandat <em>dintr-o atingere</em>. Pentru oricine.</h1>
+    <p>O aplicație completă pentru firma de taxi din oraș: clientul comandă și vede mașina venind, șoferul primește comenzi pe butoane mari și citite cu voce, iar dispeceratul vede toată flota live pe hartă.</p>
+  </section>
+
+  <div class="apps">
+    <a class="app" href="client.html" target="_blank">
+      <div class="ico" style="background:var(--accent);color:var(--accent-ink)" data-ic="user"></div>
+      <h2>Aplicația client</h2>
+      <p>Pentru oricine, de la 15 la 85 de ani.</p>
+      <ul><li>„Vreau taxi aici” – fără să scrii nimic</li><li>Preț estimat înainte de comandă</li><li>Vezi mașina venind, numărul și șoferul</li><li>Cash sau card salvat, plătit automat</li><li>Programare, mesaje, „Trimite familiei”, text mare</li></ul>
+      <span class="go">Deschide clientul <span data-ic="chevron"></span></span>
+    </a>
+    <a class="app" href="sofer.html" target="_blank">
+      <div class="ico" style="background:var(--free);color:#fff" data-ic="car"></div>
+      <h2>Aplicația șofer</h2>
+      <p>Gândită pentru șoferi de 55–60 de ani.</p>
+      <ul><li>Un singur buton: LIBER / PAUZĂ</li><li>Locul la coadă în stație</li><li>Comanda pe tot ecranul, citită cu voce</li><li>Waze sau Google Maps dintr-o atingere</li><li>Mod noapte automat, SOS, încasări pe azi</li></ul>
+      <span class="go">Deschide șoferul <span data-ic="chevron"></span></span>
+    </a>
+    <a class="app" href="dispecer.html" target="_blank">
+      <div class="ico" style="background:var(--ink);color:var(--bg)" data-ic="headset"></div>
+      <h2>Dispecerat</h2>
+      <p>Toată flota, live, pe un singur ecran.</p>
+      <ul><li>Mașinile colorate după stare, în timp real</li><li>Comenzi telefonice cu clienți recunoscuți</li><li>Alocare automată sau manuală</li><li>Cozile din stații, alerte, SOS</li><li>Curse și încasări pe ziua de azi</li></ul>
+      <span class="go">Deschide dispeceratul <span data-ic="chevron"></span></span>
+    </a>
+  </div>
+
+  <a class="wide hide-m" href="demo.html">
+    <div class="logo" style="background:var(--accent)" data-ic="play"></div>
+    <div class="grow"><div>Prezentare pe un singur ecran</div><div>Client, șofer și dispecerat unul lângă altul – ideal pentru a arăta demo-ul unei firme.</div></div>
+    <span data-ic="chevron"></span>
+  </a>
+
+  <h3 class="sec">Cum testezi în 1 minut</h3>
+  <div class="steps">
+    <div class="step"><b class="n">1</b><div><b>Intră ca șofer</b></div><p>Deschide <a href="sofer.html" target="_blank">Șofer</a> și apasă „Demo” apoi „Intră în tură” (PIN 1234).</p></div>
+    <div class="step"><b class="n">2</b><div><b>Comandă ca client</b></div><p>În alt tab, deschide <a href="client.html" target="_blank">Client</a> și apasă „Vreau taxi aici”. Comanda ajunge la tine ca șofer.</p></div>
+    <div class="step"><b class="n">3</b><div><b>Urmărește în dispecerat</b></div><p>Deschide <a href="dispecer.html" target="_blank">Dispecerat</a>. Poți grăbi timpul din butoanele x2 / x5 / x10.</p></div>
+  </div>
+  <p class="muted small" style="margin-top:10px">Toate ecranele deschise în același browser se sincronizează live. Celelalte 15 mașini sunt simulate pe străzile reale ale orașului.</p>
+
+  <h3 class="sec">Culorile de pe hartă – aceleași peste tot</h3>
+  <div class="colors">
+    <div class="c"><span class="d" style="background:var(--free);border-radius:8px"></span>Liber în stație</div>
+    <div class="c"><span class="d" style="background:var(--free)"></span>Liber pe drum</div>
+    <div class="c"><span class="d" style="background:var(--to)"></span>Merge la client</div>
+    <div class="c"><span class="d" style="background:var(--busy)"></span>Cu client</div>
+    <div class="c"><span class="d" style="background:var(--pause)"></span>Pauză</div>
+  </div>
+
+  <h3 class="sec">De ce se poate vinde oricărei firme</h3>
+  <div class="why">
+    <div class="card"><h4>Se adaptează la orice oraș</h4><p>Numele firmei, culorile, tarifele, stațiile și orașul stau într-un singur fișier de configurare. Străzile și adresele noului oraș se descarcă automat din OpenStreetMap.</p></div>
+    <div class="card"><h4>Merge pe orice telefon</h4><p>Se instalează din browser pe Android și iPhone („Adaugă pe ecranul principal”), fără magazin de aplicații. Harta are rezervă locală dacă semnalul e slab.</p></div>
+    <div class="card"><h4>Respectă felul în care lucrează firma</h4><p>Ordinea din stație, comenzile telefonice, precomenzile și taximetrul rămân. Aplicația doar le face mai simple.</p></div>
+    <div class="card"><h4>Fără erori de GPS care închid aplicația</h4><p>Principala plângere a șoferilor despre aplicațiile actuale. Aici, navigarea se face prin Waze/Google Maps, iar aplicația nu se blochează dacă pierde semnalul.</p></div>
+  </div>
+
+  <footer>Demo · date de hartă © OpenStreetMap contributors · <span id="cityName"></span></footer>
+</div>
+<script type="module">
+  import { CONFIG } from './config.js';
+  import { icon } from './js/icons.js';
+  document.querySelectorAll('[data-ic]').forEach(el => el.innerHTML = icon(el.dataset.ic, { size: el.classList.contains('ico') || el.classList.contains('logo') ? 28 : 20 }));
+  document.getElementById('logoIco').innerHTML = icon('car', { size: 24 });
+  document.getElementById('brandName').textContent = CONFIG.company.name;
+  document.getElementById('cityName').textContent = `${CONFIG.company.name} · ${CONFIG.city.name}, ${CONFIG.city.county}`;
+  document.title = `${CONFIG.company.name} · Demo aplicație`;
+</script>
+</body>
+</html>
