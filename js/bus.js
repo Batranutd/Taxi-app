@@ -4,9 +4,9 @@
 // Într-o versiune de producție, acest fișier se înlocuiește cu un WebSocket spre server.
 import { Sim } from './sim.js';
 
-const CH = 'arie-taxi-demo-v1';
-const STORE = 'arie-taxi-state-v1';
-const LOCK = 'arie-taxi-leader-v1';
+const CH = 'arie-taxi-demo-v2';
+const STORE = 'arie-taxi-state-v2';
+const LOCK = 'arie-taxi-leader-v2';
 
 export async function connect(map, { role = 'app' } = {}) {
   const tabId = Math.random().toString(36).slice(2);

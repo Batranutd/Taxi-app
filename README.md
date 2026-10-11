@@ -20,19 +20,45 @@ Toate tab-urile deschise în același browser se sincronizează live. Celelalte 
 
 ## Culorile de pe hartă (aceleași în toate aplicațiile)
 
-- **Verde pătrat** – liber, în stație (la coadă)
-- **Verde rotund cu săgeată** – liber, pe drum
-- **Portocaliu** – merge spre o comandă
-- **Albastru** – cu client
-- **Gri** – pauză
+Fiecare mașină e o mașinuță de taxi văzută de sus, cu lampa TAXI galbenă pe plafon și caroseria în culoarea stării:
+
+- **Verde** – liber (în stație sau pe drum)
+- **Mov** – merge spre o comandă
+- **Roșu** – cu client
+- **Gri transparent, contur punctat** – în pauză („mașină fantomă”)
 
 ## Ce conține
 
-**Client:** comandă fără destinație („Vreau taxi aici”) sau cu destinație și preț estimat; adrese salvate (Acasă/Serviciu), istoric; căutare pe străzi, numere și locuri cunoscute din oraș; alegere pe hartă cu pin; plată **cash** sau **card salvat** (se încasează automat la final, cu validare card); opțiuni (portbagaj mare, animal, scaun copil, ajutor la urcare) și mesaj pentru șofer; programare; urmărirea mașinii cu numărul de înmatriculare și timp de sosire; apel prin centrală, mesaje rapide, „Trimite familiei”, buton de ajutor (112 / dispecerat); chitanță și rating; mod **text mare**.
+**Client**
+- Panoul de jos se coboară (trage de bară sau apasă săgeata) ca să vezi toată harta live.
+- Atingi orice mașină: indicativ, mașină, număr, șofer, recenzii, dotări și starea ei. Dacă e liberă: „Cere cursă cu acest șofer”. Dacă e în pauză: „Programează cu el când își termină pauza”.
+- Rute salvate: Rute salvate → alegi ruta → cash/card → glisezi taxiul spre dreapta. Trei atingeri și o glisare.
+- „Mai multe opțiuni”: scaun copil, portbagaj mare, ajutor la urcare, animal. Mașinile dotate primesc comanda primele.
+- După comandă: cronometru „Aștepți de…”. Când acceptă șoferul: popup cu poza, indicativul, numărul, recenziile și butoanele „Urmărește comanda” / „Distribuie cursa”.
+- Distribuie cursa: apropiatul vede mașina, șoferul, indicativul, ora comenzii, traseul planificat și traseul parcurs.
+- SOS în timpul cursei: alertează dispeceratul, iar telefonul șoferului începe să transmită audio.
+- La final: bacșiș 5 / 10 / 15 / 20% sau altă sumă (cu cardul chiar dacă ai plătit cash), stele și recenzie.
+- Programări până la 14 zile înainte; un șofer o poate prelua din timp și primești confirmarea.
+- Chat și apel (prin centrală, numerele rămân private), poză de profil, text mare.
 
-**Șofer:** intrare în tură cu PIN; un singur comutator LIBER / PAUZĂ; locul la coadă în stație; ofertă pe tot ecranul cu sunet, vibrație, numărătoare inversă și citire cu voce; navigare în Waze sau Google Maps dintr-o atingere; pași mari: AM AJUNS (se activează lângă adresă) → CLIENTUL A URCAT → CURSĂ TERMINATĂ; cronometru de așteptare cu minute gratuite; „Clientul nu a venit”; tastatură mare pentru suma de pe taximetru; cash vs card încasat automat; mesaje rapide predefinite; câștiguri pe azi; precomenzi; mod noapte automat; SOS (ține apăsat 2 secunde); funcționează și pe orizontală, în suportul de bord.
+**Șofer**
+- Panoul cu LIBER / PAUZĂ se coboară ca să vezi harta.
+- Pauză cu durată (5–45 min sau „până revin”), prelungire, aviz la final; pe hartă apare ca mașină fantomă.
+- Cereri programate de la clienți (ex. când e în pauză): Accept / Refuz / Mesaj / Sună.
+- Comanda nouă arată profilul clientului (poză, stele, recenzii de la alți șoferi), indicațiile lui, mini-hartă cu locul exact și drumul până acolo.
+- Cea mai rapidă rută cu trafic live (străzile aglomerate pe hartă cu portocaliu / roșu).
+- Chat liber + mesaje rapide, apel cu clientul, mesaje de la dispecerat (citite cu voce).
+- La final evaluează clientul (stele, etichete, recenzie). Vede bacșișul primit.
+- Precomenzi: preia din timp curse programate.
 
-**Dispecerat:** KPI-uri live; hartă cu filtre pe stări și numerele mașinilor; formular pentru comenzi telefonice cu recunoașterea clienților după număr; adrese din listă sau click pe hartă; trimitere automată sau alegerea mașinii; detalii comandă cu istoric pe minute; realocare manuală; cozile din stații; alerte (SOS, refuzuri, comenzi fără mașină); SMS simulat către client.
+**Dispecerat** (îmbunătățit după cum lucrează programele profesionale de dispecerat)
+- Apel intrare cu recunoașterea clientului și „Comandă din nou” (ultima rută dintr-un click).
+- Timer pe comenzile nealocate (portocaliu după 1 min, roșu după 2 min), comenzi urgente.
+- Alocare după dotări, rezervarea șoferilor pentru precomenzi, anulare cu motiv.
+- Incidente SOS cu audio live din mașină, urmărire pe hartă, apel șofer/client, „Rezolvat”.
+- Mesaje către un șofer sau către toți, cu mesaje gata scrise.
+- Căutare după telefon, indicativ, număr sau adresă (util și pentru obiecte uitate).
+- Strat de trafic pe hartă, scurtătură F2 pentru comandă nouă.
 
 ## Simulatorul (`index.html`)
 

@@ -118,6 +118,48 @@ export class CityMap {
     });
 
     this._buildSearch();
+
+    // Trafic: străzile principale (cele mai lungi) se aglomerează la orele de vârf
+    const len = new Map();
+    for (let k = 0; k < E.length; k += 4) { const nm = E[k + 3]; if (nm >= 0) len.set(nm, (len.get(nm) || 0) + 1); }
+    this.mainStreets = [...len.entries()].sort((a, b) => b[1] - a[1]).slice(0, 28).map(x => x[0]);
+    this.traffic = new Float32Array(this.names.length).fill(1);
+    this.trafficAt = 0;
+    this.updateTraffic();
+  }
+
+  // Factorii de trafic se recalculează la 10 minute (în producție vin de la un serviciu de trafic live)
+  updateTraffic(now = Date.now()) {
+    const bucket = Math.floor(now / 600000);
+    if (bucket === this.trafficAt) return false;
+    this.trafficAt = bucket;
+    const h = new Date(now).getHours() + new Date(now).getMinutes() / 60;
+    const rush = (h >= 7 && h < 9.5) ? 1 : (h >= 15.5 && h < 19) ? 0.9 : (h >= 11.5 && h < 14) ? 0.45 : (h >= 22 || h < 6) ? 0 : 0.25;
+    this.traffic.fill(1);
+    const hash = (a, b) => { let x = (a * 374761393 + b * 668265263) | 0; x = (x ^ (x >>> 13)) * 1274126177; return ((x ^ (x >>> 16)) >>> 0) / 4294967295; };
+    this.mainStreets.forEach((nm, i) => {
+      const r = hash(nm, bucket);
+      const f = 1 + rush * (0.3 + 1.2 * r) * (i < 12 ? 1 : 0.6);
+      this.traffic[nm] = Math.round(f * 100) / 100;
+    });
+    return true;
+  }
+
+  trafficFactor(nm) { return nm >= 0 ? this.traffic[nm] : 1; }
+
+  // Segmente aglomerate, pentru desenare pe hartă: [{ pts, level }]
+  trafficLines(min = 1.4) {
+    const lines = [];
+    const E = this.raw.edges;
+    for (let k = 0; k < E.length; k += 4) {
+      const f = this.trafficFactor(E[k + 3]);
+      if (f >= min) lines.push({ pts: [this.pt(E[k]), this.pt(E[k + 1])], level: f >= 2 ? 2 : 1 });
+    }
+    return lines;
+  }
+
+  jams(min = 1.6) {
+    return this.mainStreets.filter(nm => this.traffic[nm] >= min).map(nm => ({ name: shortStreet(this.names[nm]), factor: Math.round(this.traffic[nm] * 100) / 100 })).sort((a, b) => b.factor - a.factor);
   }
 
   _key(la, lo) { return Math.floor(la / this.cell) + ':' + Math.floor(lo / this.cell); }
@@ -140,7 +182,7 @@ export class CityMap {
 
   pt(i) { return [this.lat[i], this.lon[i]]; }
 
-  _astar(s, t, adj) {
+  _astar(s, t, adj, useTraffic = true) {
     const n = this.n;
     const g = new Float64Array(n).fill(Infinity);
     const prev = new Int32Array(n).fill(-1);
@@ -155,7 +197,7 @@ export class CityMap {
       if (u === t) break;
       const L = adj[u];
       for (let j = 0; j < L.length; j += 3) {
-        const v = L[j], nd = g[u] + L[j + 1];
+        const v = L[j], nd = g[u] + L[j + 1] * (useTraffic ? this.trafficFactor(L[j + 2]) : 1);
         if (nd < g[v]) { g[v] = nd; prev[v] = u; heap.push(nd + h(v), v); }
       }
     }
@@ -165,11 +207,19 @@ export class CityMap {
     return path.reverse();
   }
 
-  // Rută pe străzi reale între două puncte [lat,lon]. Întoarce { pts, meters }.
+  // Cea mai rapidă rută pe străzi reale, ținând cont de trafic. Întoarce { pts, meters, slow }.
+  // slow = cât de mult mai lent e drumul față de trafic liber (1 = liber, 1.5 = cu 50% mai lent)
   route(from, to) {
+    this.updateTraffic();
     const s = this.nearestNode(from), t = this.nearestNode(to);
     let ids = s === t ? [s] : (this._astar(s, t, this.out) || this._astar(s, t, this.und));
     if (!ids) ids = [s, t];
+    let wsum = 0, msum = 0;
+    for (let k = 1; k < ids.length; k++) {
+      const a = ids[k - 1], b = ids[k], L = this.und[a];
+      for (let j = 0; j < L.length; j += 3) if (L[j] === b) { msum += L[j + 1]; wsum += L[j + 1] * this.trafficFactor(L[j + 2]); break; }
+    }
+    const slow = msum > 0 ? wsum / msum : 1;
     const pts = [from.slice(0, 2)];
     for (const i of ids) pts.push(this.pt(i));
     pts.push(to.slice(0, 2));
@@ -179,7 +229,7 @@ export class CityMap {
     if (clean.length === 1) clean.push(to.slice(0, 2));
     let meters = 0;
     for (let i = 1; i < clean.length; i++) meters += dist(clean[i - 1], clean[i]);
-    return { pts: clean.map(p => [Math.round(p[0] * 1e6) / 1e6, Math.round(p[1] * 1e6) / 1e6]), meters };
+    return { pts: clean.map(p => [Math.round(p[0] * 1e6) / 1e6, Math.round(p[1] * 1e6) / 1e6]), meters, slow: Math.round(slow * 100) / 100 };
   }
 
   // Punct aleator pe o stradă (pentru comenzi „de fundal” în demo)
@@ -286,6 +336,14 @@ export class CityMap {
     for (let k = 0; k < E.length; k += 4) lines.push([this.pt(E[k]), this.pt(E[k + 1])]);
     return (this._lines = lines);
   }
+}
+
+// Simplifică o polilinie (păstrează ~n puncte) – pentru rute salvate în comenzi
+export function decimate(pts, n = 120) {
+  if (!pts || pts.length <= n) return pts || [];
+  const step = (pts.length - 1) / (n - 1), out = [];
+  for (let i = 0; i < n; i++) out.push(pts[Math.round(i * step)]);
+  return out;
 }
 
 // Parcurgere a unei rute: poziția la o anumită distanță de la start

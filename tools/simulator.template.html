@@ -179,7 +179,7 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
   // semnal pe tab-ul „Șofer” când îl sună o comandă, chiar dacă te uiți la client
   try {
-    var ch = new BroadcastChannel('arie-taxi-demo-v1');
+    var ch = new BroadcastChannel('arie-taxi-demo-v2');
     ch.onmessage = function (ev) {
       var m = ev.data; if (!m || m.type !== 'state' || !m.state) return;
       var offers = m.state.orders.filter(function (o) { return o.status === 'oferita' && o.offer && o.offer.carId === 'car1'; }).length;

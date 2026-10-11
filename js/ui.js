@@ -109,3 +109,59 @@ export function loadingScreen(text = 'Se încarcă harta orașului…') {
   document.body.append(el);
   return { done() { el.classList.add('gone'); setTimeout(() => el.remove(), 400); }, fail(msg) { el.innerHTML = `<div class="boot-logo">${icon('alert', { size: 34 })}</div><div>${msg}</div><button class="btn primary" onclick="location.reload()">Încearcă din nou</button>`; } };
 }
+
+// Avatar: poză (dacă există) sau inițiale
+export function avatar(name, photo, size = 48) {
+  const ini = (name || '?').split(/\s+/).map(x => x[0]).join('').slice(0, 2).toUpperCase();
+  return `<span class="av" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.38)}px">${photo ? `<img src="${photo}" alt="">` : esc(ini)}</span>`;
+}
+
+// Alege o poză și o micșorează (128 px), ca să circule ușor între aplicații
+export function pickPhoto() {
+  return new Promise(res => {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = () => {
+      const f = inp.files && inp.files[0]; if (!f) return res(null);
+      const img = new Image();
+      img.onload = () => {
+        const s = 128, c = document.createElement('canvas'); c.width = c.height = s;
+        const k = Math.max(s / img.width, s / img.height), w = img.width * k, h = img.height * k;
+        c.getContext('2d').drawImage(img, (s - w) / 2, (s - h) / 2, w, h);
+        res(c.toDataURL('image/jpeg', 0.82));
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = () => res(null);
+      img.src = URL.createObjectURL(f);
+    };
+    inp.click();
+  });
+}
+
+// „Glisează ca să comanzi”: previne comenzile din greșeală
+export function swipeHtml(label = 'Glisează ca să comanzi') {
+  return `<div class="swipe" role="group" aria-label="${esc(label)}"><div class="fill"></div><div class="lbl">${esc(label)}<span class="ar">${icon('chevron', { size: 20 })}${icon('chevron', { size: 20 })}</span></div><button class="knob" type="button" aria-label="${esc(label)} – apasă Enter">${icon('car', { size: 30 })}</button></div>`;
+}
+export function bindSwipe(root, onDone, doneLabel = 'Se trimite comanda…') {
+  const sw = root.classList && root.classList.contains('swipe') ? root : root.querySelector('.swipe');
+  if (!sw) return;
+  const knob = sw.querySelector('.knob'), fill = sw.querySelector('.fill');
+  let x0 = null, dx = 0, max = 0, moved = false, fired = false;
+  const set = v => { knob.style.transform = `translateX(${v}px)`; fill.style.width = (72 + v) + 'px'; };
+  const finish = () => {
+    if (fired) return; fired = true;
+    set(max); sw.classList.add('done'); sw.querySelector('.lbl').textContent = doneLabel;
+    vibrate(60); setTimeout(onDone, 180);
+  };
+  knob.addEventListener('pointerdown', e => { if (fired) return; x0 = e.clientX; max = sw.clientWidth - 72; moved = false; knob.setPointerCapture(e.pointerId); knob.style.transition = fill.style.transition = 'none'; });
+  knob.addEventListener('pointermove', e => { if (x0 === null) return; dx = Math.max(0, Math.min(max, e.clientX - x0)); if (dx > 6) moved = true; set(dx); });
+  const up = () => {
+    if (x0 === null) return; x0 = null;
+    knob.style.transition = fill.style.transition = 'transform .25s ease, width .25s ease';
+    if (dx >= max * 0.82) finish();
+    else { set(0); if (!moved) { sw.classList.remove('shake'); void sw.offsetWidth; sw.classList.add('shake'); toast('Trage mașinuța spre dreapta până la capăt', '', 2200, 'chevron'); } }
+    dx = 0;
+  };
+  knob.addEventListener('pointerup', up); knob.addEventListener('pointercancel', up);
+  knob.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); max = sw.clientWidth - 72; finish(); } });
+}
