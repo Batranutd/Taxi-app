@@ -568,6 +568,14 @@ export class Sim {
       case 'pickedUp': if (order) this.pickedUp(state, order, now); break;
       case 'finish': if (order) this.finish(state, order, now, p.fare); break;
       case 'collectCash': if (order) this.collectCash(state, order, now); break;
+      case 'driverDrop': if (order && order.carId) {
+        const c = state.cars.find(x => x.id === order.carId);
+        if (c) { c.orderId = null; c.status = STATUS.liber; c.atPickup = false; this._stopAt(c, now); order.refused.push(c.id); }
+        order.carId = null; order.status = 'cautare'; order.offer = null; order.etaPickupAt = null;
+        order.timeline.push({ t: now, s: 'realocata' });
+        this.alert(state, 'refuz', `${c ? c.driver : 'Șoferul'} nu poate ajunge la comanda #${order.code}. Se caută alt șofer.`, { orderId: order.id }, now);
+        this.dispatch(state, order, now);
+      } break;
       case 'noShow': if (order) this.cancel(state, order, 'sofer', 'Clientul nu s-a prezentat', now); break;
       case 'sos': if (car) this.alert(state, 'sos', `SOS de la ${car.driver} (${car.plate})`, { carId: car.id, lat: carPos(car, now).p[0], lon: carPos(car, now).p[1] }, now); break;
 

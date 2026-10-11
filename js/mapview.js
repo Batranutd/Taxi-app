@@ -13,6 +13,8 @@ export function createMap(el, { dark = false, center = CONFIG.city.center, zoom 
     minZoom: 12, maxZoom: 19,
   }).setView(center, zoom);
   map.attributionControl.setPrefix(false);
+  // harta se redimensionează când panourile își schimbă înălțimea
+  if ('ResizeObserver' in window) new ResizeObserver(() => map.invalidateSize({ pan: false })).observe(el);
 
   let tiles = null;
   let fallback = null;

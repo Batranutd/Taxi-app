@@ -30,6 +30,7 @@ const app = $('#app');
 map = createMap($('#map'), { cityMap });
 route = new RouteLine(map, cssVar('--ink'));
 bus = await connect(cityMap, { role: 'client' });
+window.taxiDemo = bus;
 
 fleet = new FleetLayer(map, {
   me: null,
@@ -58,9 +59,6 @@ const lastPickup = store.get('client-last-pickup', null);
 ui.payment = profile && profile.card ? 'card' : 'cash';
 ui.pickup = lastPickup || { ...CONFIG.demoClient.home, label: CONFIG.demoClient.home.address, kind: 'saved' };
 
-bus.on(onState);
-boot.done();
-if (!profile) showOnboarding();
 
 // ---------- stare ----------
 function currentOrder() {
@@ -888,3 +886,8 @@ function showOnboarding() {
 }
 
 addEventListener('resize', () => { layoutAround(); });
+
+// ---------- pornire ----------
+bus.on(onState);
+boot.done();
+if (!profile) showOnboarding();
