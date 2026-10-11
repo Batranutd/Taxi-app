@@ -1,0 +1,194 @@
+<title>Arieș Taxi</title>
+<style>
+/* Simulator: o bară cu cele 3 aplicații, iar dedesubt aplicațiile rulează live, una lângă alta sau pe rând. */
+/*__FONTS__*/
+:root {
+  --bg: #ECEAE4; --surface: #FFFFFF; --ink: #15171C; --muted: #6D727D; --line: #DCD8CE;
+  --accent: #FFC21A; --accent-ink: #1A1405; --free: #12A150; --to: #E8730C; --busy: #2D6BD8;
+  --bezel: #0D0E11; --font: 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0F1115; --surface: #1A1D23; --ink: #F1F2F4; --muted: #959BA6; --line: #2C3038; --bezel: #000; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0F1115; --surface: #1A1D23; --ink: #F1F2F4; --muted: #959BA6; --line: #2C3038; --bezel: #000; color-scheme: dark; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; flex-wrap: wrap; flex: none; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 850; font-size: 1.1em; letter-spacing: -.01em; white-space: nowrap; }
+.brand .logo { width: 38px; height: 38px; border-radius: 12px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
+.brand small { font-weight: 650; color: var(--muted); font-size: .8em; }
+.tabs { display: inline-flex; gap: 2px; background: var(--surface); border-radius: 14px; padding: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.06); margin-left: auto; }
+.tabs button { border: 0; background: none; min-height: 42px; padding: 0 14px; border-radius: 10px; font-weight: 750; display: flex; gap: 8px; align-items: center; white-space: nowrap; }
+.tabs button.on { background: var(--ink); color: var(--bg); }
+.tabs .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.tabs button { position: relative; }
+.tabs .ping { position: absolute; top: 4px; right: 4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #D92D20; color: #fff; font-size: 11px; font-weight: 850; display: grid; place-items: center; animation: ping 1s ease-in-out infinite; }
+@keyframes ping { 50% { transform: scale(1.18); } }
+
+.hint { flex: none; margin: 0 16px 12px; padding: 10px 12px 10px 14px; border-radius: 14px; background: var(--surface); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: .92em; }
+.hint b.k { font-weight: 800; }
+.hint .st { display: flex; align-items: center; gap: 8px; }
+.hint .n { width: 22px; height: 22px; border-radius: 7px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 850; font-size: .85em; flex: none; }
+.hint .x { margin-left: auto; border: 0; background: transparent; color: var(--muted); font-weight: 700; min-height: 36px; padding: 0 8px; border-radius: 8px; }
+
+.stage { flex: 1; min-height: 0; display: flex; gap: 18px; padding: 0 16px 16px; justify-content: center; align-items: flex-start; }
+.dev { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; flex: none; }
+.dev.off { display: none; }
+.lbl { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 7px; height: 16px; }
+.lbl .dot { width: 8px; height: 8px; border-radius: 50%; }
+.phone { background: var(--bezel); border-radius: 40px; padding: 10px; overflow: hidden; box-shadow: 0 0 0 1.5px var(--line), 0 24px 50px rgba(0,0,0,.22); }
+.phone .scr { width: 390px; height: 844px; border-radius: 30px; overflow: hidden; transform-origin: 0 0; background: #fff; }
+.phone iframe, .desk iframe { border: 0; display: block; background: #F5F4F0; }
+.phone iframe { width: 390px; height: 844px; }
+.dev.desk { flex: 1 1 auto; align-self: stretch; min-width: 0; }
+.desk .frame { flex: 1; width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1.5px var(--line), 0 24px 50px rgba(0,0,0,.18); }
+.desk iframe { width: 100%; height: 100%; }
+
+.notes { flex: 0 1 320px; align-self: center; display: flex; flex-direction: column; gap: 12px; }
+.notes.off { display: none; }
+.notes h2 { margin: 0; font-size: 1.6em; letter-spacing: -.02em; line-height: 1.1; text-wrap: balance; }
+.notes p { margin: 0; color: var(--muted); line-height: 1.5; }
+.notes ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.notes li { display: flex; gap: 10px; line-height: 1.4; }
+.notes li::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-top: .5em; flex: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+.notes .switch { align-self: flex-start; border: 0; background: var(--ink); color: var(--bg); min-height: 44px; padding: 0 18px; border-radius: 12px; font-weight: 750; }
+
+@media (max-width: 1000px) { .tabs button[data-v="all"] { display: none; } }
+@media (max-width: 760px) {
+  .bar { padding: 8px 10px; gap: 8px; }
+  .brand small, .brand .name { display: none; }
+  .tabs { margin-left: 0; flex: 1; justify-content: space-between; }
+  .tabs button { flex: 1; justify-content: center; padding: 0 6px; min-height: 40px; font-size: .92em; }
+  .hint { margin: 0 10px 8px; font-size: .8em; gap: 4px 10px; padding: 8px 10px; position: relative; }
+  .hint .k { display: none; }
+  .hint .st { width: 100%; padding-right: 64px; }
+  .hint .st + .st { padding-right: 0; }
+  .hint .n { width: 18px; height: 18px; border-radius: 6px; }
+  .hint .x { position: absolute; top: 4px; right: 4px; min-height: 30px; }
+  .stage { padding: 0; gap: 0; align-items: stretch; }
+  .dev, .dev.desk { flex: 1; width: 100%; gap: 0; }
+  .lbl, .notes { display: none !important; }
+  .phone { border-radius: 0; padding: 0; box-shadow: none; width: 100% !important; height: 100% !important; }
+  .phone .scr { width: 100%; height: 100%; border-radius: 0; transform: none !important; }
+  .phone iframe { width: 100%; height: 100%; }
+  .desk .frame { border-radius: 0; box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<header class="bar">
+  <div class="brand"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5V12l1.8-4.6A2 2 0 0 1 8.7 6h6.6a2 2 0 0 1 1.9 1.4L19 12v4.5"/><rect x="3.5" y="11.5" width="17" height="5.5" rx="1.5"/><path d="M6 17v2M18 17v2"/></svg></span><span class="name">Arieș Taxi</span><small>demo · Turda</small></div>
+  <nav class="tabs" id="tabs" aria-label="Alege aplicația">
+    <button data-v="all">Toate 3</button>
+    <button data-v="client"><span class="dot" style="background:var(--accent)"></span>Client</button>
+    <button data-v="sofer"><span class="dot" style="background:var(--free)"></span>Șofer</button>
+    <button data-v="dispecer"><span class="dot" style="background:var(--ink)"></span>Dispecerat</button>
+  </nav>
+</header>
+
+<div class="hint" id="hint">
+  <b class="k">Încearcă:</b>
+  <span class="st"><span class="n">1</span>Șofer: apasă „Demo”, apoi „Intră în tură”</span>
+  <span class="st"><span class="n">2</span>Client: „Continuă”, apoi „Vreau taxi aici”</span>
+  <span class="st"><span class="n">3</span>Comanda sună la șofer. Dispeceratul vede tot live</span>
+  <button class="x" id="hintX" aria-label="Ascunde indicațiile">Ascunde</button>
+</div>
+
+<main class="stage" id="stage">
+  <section class="dev" id="d-client"><div class="lbl"><span class="dot" style="background:var(--accent)"></span>Client</div><div class="phone"><div class="scr"><iframe id="f-client" title="Aplicația client" allow="geolocation; clipboard-write; autoplay"></iframe></div></div></section>
+  <section class="dev" id="d-sofer"><div class="lbl"><span class="dot" style="background:var(--free)"></span>Șofer</div><div class="phone"><div class="scr"><iframe id="f-sofer" title="Aplicația șofer" allow="geolocation; autoplay"></iframe></div></div></section>
+  <aside class="notes off" id="notes"></aside>
+  <section class="dev desk" id="d-dispecer"><div class="lbl"><span class="dot" style="background:var(--ink)"></span>Dispecerat</div><div class="frame"><iframe id="f-dispecer" title="Dispecerat"></iframe></div></section>
+</main>
+
+<script type="application/json" id="parts">/*__PARTS__*/</script>
+<script>
+(function () {
+  var P = JSON.parse(document.getElementById('parts').textContent);
+  window.__CITY_DATA = P.data;
+  var close = '</' + 'script>';
+  function doc(role) {
+    return '<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">'
+      + '<style>' + P.css.common + P.css[role] + '</style><script>' + P.leaflet + close + '</head>'
+      + '<body class="' + role + '">' + P.body[role] + '<script type="module">' + P.js[role] + close + '</body></html>';
+  }
+  // pornim întâi dispeceratul (ține simularea flotei), apoi telefoanele
+  ['dispecer', 'sofer', 'client'].forEach(function (r, i) {
+    setTimeout(function () { document.getElementById('f-' + r).srcdoc = doc(r); }, i * 150);
+  });
+
+  var NOTES = {
+    client: { h: 'Aplicația pentru client', p: 'Gândită pentru oricine, de la elevi la bunici.', li: ['„Vreau taxi aici” dintr-o singură atingere', 'Preț estimat înainte de comandă', 'Cash sau card salvat, plătit automat la final', 'Vezi mașina venind, numărul și șoferul', 'Programare, mesaje rapide, „Trimite familiei”', 'Mod text mare din meniu'] , other: 'sofer', otherLbl: 'Vezi și șoferul' },
+    sofer: { h: 'Aplicația pentru șofer', p: 'Butoane mari, un singur pas pe ecran. PIN demo: 1234.', li: ['Un singur comutator: LIBER sau PAUZĂ', 'Locul la coadă în stație', 'Comanda pe tot ecranul, citită cu voce', 'Waze sau Google Maps dintr-o atingere', 'Pași mari: Am ajuns, Clientul a urcat, Cursă terminată', 'Mod noapte automat, SOS, încasări pe azi'], other: 'client', otherLbl: 'Vezi și clientul' }
+  };
+  var view = null;
+  var narrow = function () { return innerWidth <= 1000; };
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+  function setView(v) {
+    if (v === 'all' && narrow()) v = 'client';
+    view = v;
+    document.querySelectorAll('#tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.v === v); });
+    ['client', 'sofer', 'dispecer'].forEach(function (r) { document.getElementById('d-' + r).classList.toggle('off', !(v === 'all' || v === r)); });
+    var notes = document.getElementById('notes');
+    var n = NOTES[v];
+    notes.classList.toggle('off', !n);
+    if (n) {
+      notes.innerHTML = '<h2>' + n.h + '</h2><p>' + n.p + '</p><ul>' + n.li.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul><button class="switch" data-go="' + n.other + '">' + n.otherLbl + '</button>';
+      notes.querySelector('[data-go]').onclick = function () { setView(n.other); };
+    }
+    store('sim-view', v);
+    fit();
+    // aplicația care tocmai a apărut își reîncadrează harta
+    setTimeout(function () {
+      ['client', 'sofer', 'dispecer'].forEach(function (r) {
+        if (v !== 'all' && v !== r) return;
+        try { document.getElementById('f-' + r).contentWindow.dispatchEvent(new Event('resize')); } catch (e) {}
+      });
+    }, 80);
+  }
+  function fit() {
+    var stage = document.getElementById('stage');
+    var small = innerWidth <= 760;
+    var h = stage.clientHeight - 16 - 22 - 20 - 10;
+    var s = Math.min(1, h / 844);
+    if (view === 'all') {
+      var free = stage.clientWidth - 32 - 18 * 2 - 480;
+      s = Math.min(s, free / 2 / 390);
+    }
+    s = Math.max(0.42, s);
+    ['client', 'sofer'].forEach(function (r) {
+      var ph = document.querySelector('#d-' + r + ' .phone'), sc = ph.querySelector('.scr');
+      if (small) { ph.style.width = ph.style.height = ''; return; }
+      sc.style.transform = 'scale(' + s + ')';
+      ph.style.width = (390 * s + 20) + 'px';
+      ph.style.height = (844 * s + 20) + 'px';
+      ph.style.borderRadius = Math.round(40 * s) + 'px';
+      sc.style.borderRadius = Math.round(30) + 'px';
+    });
+    var desk = document.querySelector('#d-dispecer .frame');
+    desk.style.height = small ? '' : (stage.clientHeight - 16 - 22) + 'px';
+  }
+  document.querySelectorAll('#tabs button').forEach(function (b) { b.onclick = function () { setView(b.dataset.v); }; });
+  document.getElementById('hintX').onclick = function () { document.getElementById('hint').hidden = true; store('sim-hint', 'off'); fit(); };
+  if (store('sim-hint') === 'off') document.getElementById('hint').hidden = true;
+  addEventListener('resize', function () { if (view === 'all' && narrow()) setView('client'); else fit(); });
+  setView(store('sim-view') || (narrow() ? 'client' : 'all'));
+
+  // semnal pe tab-ul „Șofer” când îl sună o comandă, chiar dacă te uiți la client
+  try {
+    var ch = new BroadcastChannel('arie-taxi-demo-v1');
+    ch.onmessage = function (ev) {
+      var m = ev.data; if (!m || m.type !== 'state' || !m.state) return;
+      var offers = m.state.orders.filter(function (o) { return o.status === 'oferita' && o.offer && o.offer.carId === 'car1'; }).length;
+      var btn = document.querySelector('#tabs [data-v="sofer"]');
+      var ping = btn.querySelector('.ping');
+      var show = offers > 0 && view !== 'sofer' && view !== 'all';
+      if (show && !ping) { ping = document.createElement('span'); ping.className = 'ping'; ping.textContent = '1'; btn.appendChild(ping); }
+      if (!show && ping) ping.remove();
+    };
+  } catch (e) {}
+})();
+</script>

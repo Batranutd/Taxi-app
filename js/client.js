@@ -886,7 +886,13 @@ function showOnboarding() {
   };
 }
 
-addEventListener('resize', () => { layoutAround(); });
+let resizeT;
+addEventListener('resize', () => {
+  layoutAround();
+  // când ecranul devine vizibil (ex. în simulator), reîncadrăm harta
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => { map.invalidateSize(); const o = currentOrder(); const scr = screenFor(o); if (scr !== 'pickmap') updateMapForScreen(scr, o); }, 150);
+});
 
 // ---------- pornire ----------
 bus.on(onState);

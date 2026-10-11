@@ -120,7 +120,7 @@ export class Sim {
     const now = Date.now();
     const stations = CONFIG.stations;
     const state = {
-      v: 1, created: now, speedMul: 2, bgOrders: true, humanPriority: true, humanBg: true,
+      v: 1, created: now, speedMul: 2, bgOrders: true, humanPriority: true, humanBg: false,
       cars: [], orders: [], chats: {}, alerts: [], clients: {}, orderSeq: 1040,
     };
     CONFIG.fleet.forEach((f, i) => {

@@ -56,6 +56,10 @@ class MinHeap {
 
 export class CityMap {
   static async load(url = CONFIG.map.dataUrl) {
+    // în simulatorul dintr-o singură pagină, datele vin deja încărcate
+    let pre = null;
+    try { pre = window.__CITY_DATA || (window.parent !== window && window.parent.__CITY_DATA) || null; } catch { pre = null; }
+    if (pre) return new CityMap(pre);
     const res = await fetch(url);
     if (!res.ok) throw new Error('Nu am putut încărca harta orașului');
     return new CityMap(await res.json());

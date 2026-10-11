@@ -626,6 +626,9 @@ function showLogin() {
   };
 }
 
+let resizeT;
+addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { map.invalidateSize(); followMe(true); }, 150); });
+
 // ---------- pornire ----------
 bus.on(onState);
 boot.done();

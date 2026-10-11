@@ -2,5 +2,11 @@
   "name": "taxi-app",
   "private": true,
   "type": "module",
-  "scripts": { "harta": "node tools/build-map-data.mjs" }
+  "scripts": {
+    "harta": "node tools/build-map-data.mjs",
+    "build": "node tools/build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.1"
+  }
 }
