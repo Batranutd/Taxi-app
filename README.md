@@ -4,11 +4,10 @@ Demo complet, interactiv, al unei aplicații de taxi pentru un oraș mic sau mij
 
 | Pagina | Pentru cine | Ce face |
 |---|---|---|
-| `index.html` | prezentare | Pagina de start, cu linkuri spre toate aplicațiile |
+| `index.html` | prezentare | **Simulatorul**: cele 3 aplicații rulează live în aceeași pagină, cu taburi Client / Șofer / Dispecerat / Toate 3 |
 | `client.html` | clienți | Comandă dintr-o atingere, preț estimat, urmărire mașină, cash sau card |
 | `sofer.html` | șoferi | Butoane mari, ofertă pe tot ecranul, citire cu voce, coadă în stație |
 | `dispecer.html` | dispecerat | Flota live pe hartă, comenzi telefonice, alocare manuală, alerte |
-| `demo.html` | prezentări | Cele 3 ecrane unul lângă altul, pe un laptop |
 
 ## Cum testezi în 1 minut
 
@@ -34,6 +33,15 @@ Toate tab-urile deschise în același browser se sincronizează live. Celelalte 
 **Șofer:** intrare în tură cu PIN; un singur comutator LIBER / PAUZĂ; locul la coadă în stație; ofertă pe tot ecranul cu sunet, vibrație, numărătoare inversă și citire cu voce; navigare în Waze sau Google Maps dintr-o atingere; pași mari: AM AJUNS (se activează lângă adresă) → CLIENTUL A URCAT → CURSĂ TERMINATĂ; cronometru de așteptare cu minute gratuite; „Clientul nu a venit”; tastatură mare pentru suma de pe taximetru; cash vs card încasat automat; mesaje rapide predefinite; câștiguri pe azi; precomenzi; mod noapte automat; SOS (ține apăsat 2 secunde); funcționează și pe orizontală, în suportul de bord.
 
 **Dispecerat:** KPI-uri live; hartă cu filtre pe stări și numerele mașinilor; formular pentru comenzi telefonice cu recunoașterea clienților după număr; adrese din listă sau click pe hartă; trimitere automată sau alegerea mașinii; detalii comandă cu istoric pe minute; realocare manuală; cozile din stații; alerte (SOS, refuzuri, comenzi fără mașină); SMS simulat către client.
+
+## Simulatorul (`index.html`)
+
+E generat automat din codul aplicațiilor, într-un singur fișier care merge oriunde (GitHub Pages, artifact, atașat pe e-mail). După orice modificare în `js/`, `css/`, `config.js` sau `data/`, rulează:
+
+```
+npm install
+npm run build
+```
 
 ## Adaptare pentru altă firmă sau alt oraș
 
